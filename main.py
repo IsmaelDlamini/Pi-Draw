@@ -53,6 +53,48 @@ eraser_line_number = 0
 blockSize = 5
 
 
+class Draw:
+    
+    def __init__(self): 
+        self.mouse_pressed = False
+        self.new_pixels = [] #The pixels collected on mouse press (volatile)
+        self.all_pixels = [] #All the pixels collected since the beginning of program (non-volatile)
+        self.sorted_pixels = [] #2Dimensional array containing the separated pixel arrays(new pixels array)
+          
+    def record_coordinates(self):
+        if pygame.mouse.get_pressed()[0]:
+            mouse_pos = pygame.mouse.get_pos() 
+            new_pixel = mouse_pos + (color,) + (blockSize,) # mouse position(x, y), color and the size of the square
+             
+            # Add a new pixel to the new_pixel array if it does not exist
+            if new_pixel not in self.new_pixels:
+                self.new_pixels.append(new_pixel)
+                
+            # Add a new pixel to the all_pixels array if it does not exist    
+            if new_pixel not in self.all_pixels:
+                self.all_pixels.append(new_pixel)
+
+        # Check if the mouse if pressed(meaning the user is drawing actively)
+        elif not pygame.mouse.get_pressed()[0]:
+            if self.new_pixels.len() > 0: 
+                self.sorted_pixels.append(self.new_pixels) # If the mouse is not pressed check if there is any new pixels and append the rest
+                self.new_pixels = []
+
+        # if press_number != current_p_num:
+        #     pixel_world.append(all_pixels)
+        #     all_pixels = []
+        #     current_p_num = press_number
+        
+    def test(self):
+        if pygame.mouse.get_pressed()[0]:
+            print(self.new_pixels)
+            print(self.all_pixels)    
+            print(self.sorted_pixels)
+
+
+draw_object = Draw()
+
+
 class Shapes:
 
     def __init__(self, current_color):
@@ -67,41 +109,49 @@ class Shapes:
         colors = ["black", "white", "black", "black",]
         x_y = [[150, 350], [155, 255], [160, 400], [255, 355]]
         W_H = [[200, 147], [190, 137], [60, 40], [10, 137]]
-
         count = 0
-
         for shape in range(4):
             pygame.draw.rect(
                 screen, colors[count], (x_y[count][0], x_y[count][1], W_H[count][0], W_H[count][1]))
 
-    def draw_circle(self):
+    def record_shape_coordinates(self): #this one just takes in the coordinates of the circle
+                     
+        pygame.draw.rect(screen, "black", (150, 350, 200, 147))
+        pygame.draw.rect(screen, "white", (155, 355, 190, 137))
+
+        pygame.draw.rect(screen, "black", (160, 400, 60, 40))
+        pygame.draw.rect(screen, "black", (255, 355, 10, 137))
+        
+        self.show_menu()
 
         if pygame.mouse.get_pressed()[0]:
             mouse_pos = pygame.mouse.get_pos()
-
             if mouse_pos[1] > 50 and mouse_pos[1] < 500:
-
-                if len(starting) < 2:
+                
+                if len(self.mouse_initial_pos) < 1:
                     self.mouse_initial_pos.append(mouse_pos)
 
                 current_mouse_position = mouse_pos
-
                 distance_x = mouse_pos[0] - self.mouse_initial_pos[0][0]
                 distance_y = mouse_pos[1] - self.mouse_initial_pos[0][1]
-
+            
                 self.radius = int(
                     round(math.sqrt(distance_x ** 2 + distance_y ** 2), 0))
 
                 shape = pygame.draw.circle(
-                    screen, color, (self.mouse_initial_pos[0][0], self.mouse_initial_pos[0][1]), radius)
-
-        if not pygame.mouse.get_pressed()[0] and radius != 0:
+                    screen, color, (self.mouse_initial_pos[0][0], self.mouse_initial_pos[0][1]), self.radius)
+                            
+        if not pygame.mouse.get_pressed()[0] and self.radius != 0:
             self.shape_list.append(
-                self.mouse_initial_pos[0] + (self.radius, ) + (self.color, ))
+                self.mouse_initial_pos[0] + (self.radius, ) + (self.current_color, ))
 
         if not pygame.mouse.get_pressed()[0]:
             self.mouse_initial_pos = []
             self.radius = 0
+        
+    def draw_shape_on_screen(self):
+        for shape in self.shape_list:
+            pygame.draw.circle(screen, shape[3], (shape[0], shape[1]), shape[2])
 
 
 shape_object = Shapes(color)
@@ -307,7 +357,7 @@ def shapes():
 
         if pos[1] > 50 and pos[1] < 500:
 
-            if len(starting) < 2:
+            if len(starting) < 1:
                 starting.append(pos)
 
             current = pos
@@ -365,6 +415,8 @@ def place_pixels():
         if line_number == press_number:
             line_number = 0
 
+
+    #the current list of all the pixels that are being recorded
     for pixel in all_pixels:
         pygame.draw.rect(
             screen, pixel[2], (pixel[0], pixel[1], pixel[3], pixel[3]), border_radius=10)
@@ -391,8 +443,7 @@ while running:
     screen.fill("white")
     clock.tick(fps)
 
-    for shape in shape_list:
-        pygame.draw.circle(screen, shape[3], (shape[0], shape[1]), shape[2])
+    
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -406,7 +457,6 @@ while running:
             pos = pygame.mouse.get_pos()
 
             if pos[1] < 500 and not chosing_color and not clear_all:
-
                 press_number += 1
 
     mouse_pos1 = pygame.mouse.get_pos()
@@ -415,7 +465,6 @@ while running:
         cord_record()
 
     place_pixels()
-
     header()
     footer()
     eraser_and_clear_button()
@@ -425,11 +474,18 @@ while running:
     if chosing_color:
         color_menu()
     if chosing_shape:
-        shapes()
-
+        shape_object.show_menu()
+        shape_object.record_shape_coordinates()
+       
+    shape_object.draw_shape_on_screen()
+    #print(shape_object.shape_list)
     # print(pixel_world2)
 
     press_number = len(pixel_world)
+    
+    if pygame.mouse.get_pressed()[0]:
+        draw_object.record_coordinates()
+        draw_object.test()
 
     pygame.display.update()
 
