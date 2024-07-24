@@ -54,6 +54,11 @@ class Draw:
             self.new_pixels = []
 
     def place_pixels_on_screen(self):
+        
+        
+        def test():
+            print("testing too see if i can nest methods")
+        
         mouse_pos = pygame.mouse.get_pos()
         for pixel in self.all_pixels:
             pygame.draw.rect(
