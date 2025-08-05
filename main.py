@@ -29,6 +29,29 @@ chosing_shape = False
 blockSize = 5
 
 
+
+class Lines: 
+    def __init__(self):
+        self.lines = []
+
+    #draw lines on the screen
+    @staticmethod
+    def DrawLines():
+        # to be added later on
+
+    def RemoveLine(self, point_x_pos, point_y_pos):
+        for line in self.lines
+        
+        
+        
+
+class Line: 
+    def __init__(self):
+        self.start_pos = 0
+        self.end_pos = 0
+        self.color = 0
+
+
 class Draw:
     def __init__(self):
         self.new_pixels = []  # The pixels collected on mouse press (volatile)
@@ -36,6 +59,8 @@ class Draw:
         self.sorted_pixels = []  # 2Dimensional array containing the separated pixel arrays(new pixels array)
         self.erasing_pixels = False
         self.erased_positions = []
+
+    #create an array containing lines that you need to connect to all the points on the screen
 
     def record_coordinates(self):
 
