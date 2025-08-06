@@ -15,7 +15,7 @@ app_font = pygame.font.Font("freesansbold.ttf", 30)
 
 pressed = False
 
-fps = 2000
+fps = 60
 software_name = "Pixel_Art V0.1 coded by Ismail"
 clock = pygame.time.Clock()
 
@@ -29,27 +29,31 @@ chosing_shape = False
 blockSize = 5
 
 
-
 class Lines: 
     def __init__(self):
         self.lines = []
 
+    
+    def AddLines(self, line_coordinates):
+        self.lines.append(line_coordinates)
+
     #draw lines on the screen
     @staticmethod
-    def DrawLines():
-        # to be added later on
+    def DrawLines(): return True
+       
 
-    def RemoveLine(self, point_x_pos, point_y_pos):
-        for line in self.lines
-        
-        
-        
+    def RemoveLine(self, point_x_pos, point_y_pos): return True
+          
 
 class Line: 
-    def __init__(self):
-        self.start_pos = 0
-        self.end_pos = 0
-        self.color = 0
+    def __init__(self, start_pos, end_pos, color):
+        self.start_pos = start_pos
+        self.end_pos = end_pos
+        self.color = color
+        self.width = 5
+
+    def CreateLine(self):
+        return (self.start_pos, self.end_pos, self.color)
 
 
 class Draw:
@@ -89,7 +93,7 @@ class Draw:
             pygame.draw.rect(
                 screen, pixel[2], (pixel[0], pixel[1], pixel[3], pixel[3]), border_radius=10)
 
-        for a in range(len(self.sorted_pixels) ):
+        for a in range(len(self.sorted_pixels) ): #these are sorted pixels
             for current_pixel in self.sorted_pixels[a][0:len(self.sorted_pixels[a]) - 2]:
                 line = pygame.draw.line(screen, current_pixel[2], (
                     current_pixel[0], current_pixel[1]), (
@@ -97,12 +101,14 @@ class Draw:
                                             self.sorted_pixels[a][self.sorted_pixels[a].index(current_pixel) + 1][1]),
                                         width=5 + current_pixel[3])
 
-        for pixel in self.new_pixels[0:len(self.new_pixels) - 2]:
+        for pixel in self.new_pixels[0:len(self.new_pixels) - 2]: #these are new pixels
             line = pygame.draw.line(screen, pixel[2],
                                     (pixel[0], pixel[1]), (
                                         self.new_pixels[self.new_pixels.index(pixel) + 1][0],
                                         self.new_pixels[self.new_pixels.index(pixel) + 1][1]),
                                     width=5 + pixel[3])
+
+        # why am i creating two lines at the same time
 
         for eraser_pixel in self.erased_positions:
             pygame.draw.rect(
