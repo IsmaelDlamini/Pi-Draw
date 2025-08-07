@@ -65,6 +65,7 @@ class Draw:
         self.erased_positions = []
 
     #create an array containing lines that you need to connect to all the points on the screen
+    
 
     def record_coordinates(self):
 
