@@ -28,8 +28,6 @@ chosing_shape = False
 
 blockSize = 5
 
-#testing to see if this will work, i think it does
-
 class Lines: 
     def __init__(self):
         self.lines = []
